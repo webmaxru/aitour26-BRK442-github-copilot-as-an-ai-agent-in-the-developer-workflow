@@ -14,7 +14,8 @@
 			],
 			"settings": {
 				"extensions.autoUpdate": true,
-				"extensions.autoCheckUpdates": true
+				"extensions.autoCheckUpdates": true,
+				"chat.extensionTools.enabled": true
 			}
 		}
 	},
