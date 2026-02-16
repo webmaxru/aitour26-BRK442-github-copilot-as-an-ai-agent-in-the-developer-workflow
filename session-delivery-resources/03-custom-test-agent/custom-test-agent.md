@@ -2,13 +2,20 @@
 
 ### Pre-requisites (Checklist) ✅
 
-- [ ] Open the `src` folder in VS Code to view the application code
+- [ ] Open the `src` folder in VS Code/Codespace to view the application code
 
 ### Demo Steps 🗒
 
 Delivery style (Recommended) | Demo Description 
 --------------|------------- 
-Do it live | - Open GHCP Chat window <br> - In the GitHub Copilot chat window, click on “Configure Custom Agents…” link in the mode selector drop down <br> - In the VS Code prompt: Create new custom agent… -> .github/agents -> test-agent <br> - Enter a description in the test-agent.agent.md file "_This agent will be used to write tests for the application_" <br> - Click on "Configure tools..." link within the file to configure the tools for the custom agent <br> - Select the "Built In" checkbox <br> - Fill the file with content code provided below <br> - Show the custom agent available in the modes drop down list in GitHub Copilot Chat window
+Do it live | - Open GHCP Chat window <br> - In the GitHub Copilot chat window, click on “Configure Custom Agents…” link in the mode selector drop down <br> - In the VS Code prompt: Create new custom agent… -> .github/agents -> test-agent <br> - Remove the default file contents and replace it with the content provided below <br> - Show the custom agent available in the modes drop down list in GitHub Copilot Chat window <br> - Open `./src/test_app.py` to show it empty <br> - Select the custom agent in GHCP and use the provided prompt to start a test suite generation using the custom agent
+
+### Prompt(s) 💬
+
+********
+"Write some unit tests for this application"
+********
+
 
 ### Talking points 🎙
 
@@ -19,10 +26,14 @@ Do it live | - Open GHCP Chat window <br> - In the GitHub Copilot chat window, c
 
 ### Use the following file contents and add it to your custom agent .md file upon creation. Explain the contents, including the test pattern as part of the demo ⬇️:
 
-# Application Overview and Testing Guide
-
-## Application Overview
-
+```
+---
+name: test-agent
+description: This agent will be used to write tests for the application
+argument-hint: Write some unit tests, unit tests, subagent to write tests
+tools: ['vscode', 'execute', 'read', 'agent', 'edit', 'search', 'web', 'todo']
+---
+```
 This is a Flask-based REST API for product management with CRUD operations.
 
 The application code is in the directory `./src` so when asked questions relating to the application, only reference the files within this directory.
@@ -139,5 +150,4 @@ python -m pytest test_   # Run specific test pattern
 - Unit tests should use Flask test client, not real HTTP calls
 - E2E tests run on port 5001 to avoid conflicts with dev server
 - Always clean up browser instances in E2E tests
-
 
