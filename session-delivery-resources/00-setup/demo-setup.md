@@ -95,7 +95,7 @@ These are installed with the setup script when using a local Codespace, but if r
 - [ ] Copilot Chat panel authenticated and accessible
 - [ ] Prepare to demonstrate custom agent creation
 - [ ] **Important:** Ensure the Custom Agent instructions include specific test code templates found in [Generate Custom Instructions](../03-custom-test-agent/custom-test-agent.md)
-- [ ] App running and available at http://localhost:5000 (if running locally) or the forwarded address/port and terminal virtual environment activated with the dependency requirements installed. When testing the app use the route /proudcts and you will see an empty product list
+- [ ] App running and available at http://localhost:5000 (if running locally) or the forwarded address/port and terminal virtual environment activated with the dependency requirements installed. When testing the app use the route /products and you will see an empty product list
 - [ ] `test_app.py` file should be present but **empty**
 - [ ] Terminal ready to run pytest commands within the virtual environment (venv)
 - [Demo notes](../03-custom-test-agent/custom-test-agent.md)
