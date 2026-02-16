@@ -11,7 +11,7 @@
 
 | Delivery style (Recommended) | Demo Description 
 --------------|------------- 
-Use recorded demo video | - Open Copilot CLI in your terminal using the `copilot --banner` command <br> - Talk about the CLI and what it is <br> - Show the language model picker in the CLI using `/model` (Optional) <br> - By default the GitHub MCP server is installed so ask it to list all of the open issues on the repository <br> - Use `/plan` and the provided prompt to create a plan for the solution to the GitHub issue <br> - When happy with the planned solution, use `/delegate` to assign the work to the Cloud Coding Againt
+Use recorded demo video | - Open Copilot CLI in your terminal using the `copilot --banner` command <br> - Talk about the CLI and what it is <br> - Show the language model picker in the CLI using `/model` (Optional) <br> - By default the GitHub MCP server is installed so ask it to list all of the open issues on the repository <br> - Use `/plan` and the provided prompt to create a plan for the solution to the GitHub issue <br> - When happy with the planned solution, use `/delegate` to assign the work to the Cloud Coding Agent
 
 ### Prompt(s) 💬
 

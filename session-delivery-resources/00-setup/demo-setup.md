@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document provides comprehensive setup instructions for delivering the **BRK442: GitHub Copilot as an AI Agent in the Developer Workflow** session. The session includes 6 demos showcasing GitHub Copilot's capabilities as an AI agent in modern development workflows.
+This document provides comprehensive setup instructions for delivering the **BRK442: GitHub Copilot as an AI Agent in the Developer Workflow** session. The session includes 5 demos showcasing GitHub Copilot's capabilities as an AI agent in modern development workflows.
 
 ## 🎯 Session Overview
 
