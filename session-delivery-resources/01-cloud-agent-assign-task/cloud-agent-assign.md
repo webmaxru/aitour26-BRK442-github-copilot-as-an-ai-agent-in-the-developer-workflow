@@ -11,7 +11,14 @@
 
 | Delivery style (Recommended) | Demo Description 
 --------------|------------- 
-Use recorded demo video | - Review issue on VS Code using the GitHub Pull Request extension <br> - Open GHCP Chat window and add the issue as context to the chat <br> - Select "Plan" mode <br> - Show the language model picker in VS Code (Optional) <br> - Use the prompt "Create a plan for issue 2 on this repository" <br> - Wait for GHCP to finish <br> - Use prompt "Start implementation of steps <x,x,x>" (depending on output) <br> - Click on the slim arrow and select "Cloud" to delegate the task to the Coding Agent
+Use recorded demo video | - Open Copilot CLI in your terminal using the `copilot --banner` command <br> - Talk about the CLI and what it is <br> - Show the language model picker in the CLI using `/model` (Optional) <br> - By default the GitHub MCP server is installed so ask it to list all of the open issues on the repository <br> - Use `/plan` and the provided prompt to create a plan for the solution to the GitHub issue <br> - When happy with the planned solution, use `/delegate` to assign the work to the Cloud Coding Agent
+
+### Prompt(s) 💬
+
+********
+1. "List all open issues"
+2. "Summarise the issue and create an implementation plan"
+********
 
 ## Talking points 🎙️
 

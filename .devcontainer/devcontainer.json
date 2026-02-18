@@ -11,7 +11,12 @@
 				"GitHub.copilot",
 				"GitHub.copilot-chat",
 				"ms-python.python"
-			]
+			],
+			"settings": {
+				"extensions.autoUpdate": true,
+				"extensions.autoCheckUpdates": true,
+				"chat.extensionTools.enabled": true
+			}
 		}
 	},
 	"remoteEnv": {

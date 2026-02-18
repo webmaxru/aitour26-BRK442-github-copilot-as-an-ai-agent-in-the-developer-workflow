@@ -2,39 +2,37 @@
 
 ## Overview
 
-This document provides comprehensive setup instructions for delivering the **BRK442: GitHub Copilot as an AI Agent in the Developer Workflow** session. The session includes 6 demos showcasing GitHub Copilot's capabilities as an AI agent in modern development workflows.
+This document provides comprehensive setup instructions for delivering the **BRK442: GitHub Copilot as an AI Agent in the Developer Workflow** session. The session includes 5 demos showcasing GitHub Copilot's capabilities as an AI agent in modern development workflows.
 
 ## 🎯 Session Overview
 
 | Demo | Description        | Type 
 --------------| --------------- | --------------- |
-| Demo 1 | Assign an issue to the Cloud Agent | [Recorded Video](https://aka.ms/AAxrxxv) <br> [Instructions](../01-cloud-agent-assign-task/cloud-agent-assign.md)
+| Demo 1 | Assign an issue to the Cloud Agent from the Copilot CLI | [Recorded Video](https://aka.ms/AAxrxxv) <br> [Instructions](../01-cloud-agent-assign-task/cloud-agent-assign.md)
 | Demo 2 | Review the PR from the Cloud Agent | [Backup Recording](https://aka.ms/AAxs5hy) <br> [Live Demo](../02-cloud-agent-pr-review/cloud-agent-pr-review.md)
-| Demo 3 | Create a Custom Agent  | [Backup Recording](https://aka.ms/AAz5bmb) <br> [Live Demo](../03-custom-agent/custom-agent.md)
-| Demo 4 | Add tests using the Custom Agent | [Backup Recording](https://aka.ms/AAz5bma) <br> [Live Demo](../04-custom-agent-add-tests/custom-agent-add-tests.md)
-| Demo 5 | Install MSFT Learn MCP server into a local workspace | [Backup Recording](https://aka.ms/AAz5j9c) <br> [Live Demo](../05-add-mcp-server/add-mcp.md)
-| Demo 6 | Add a SQLite database to the project  | [Recording Video](https://aka.ms/AAxs5hx) <br> [Instructions](../06-db-migration/add-sqldb.md)
-| Demo 7 | Upgrade a Java app and implement migration to Azure  | [Recording Video](https://aka.ms/AAz85fx) <br> [Instructions](../07-app-mod/app-mod.md)
+| Demo 3 | Create a Custom Test Agent  | [Backup Recording](https://aka.ms/AAz5bmb) <br> [Live Demo](../03-custom-test-agent/custom-test-agent.md)
+| Demo 4 | Add a SQLite database to the project  | [Recording Video](https://aka.ms/AAxs5hx) <br> [Instructions](../04-db-migration/add-sqldb.md)
+| Demo 5 | Upgrade a Java app and implement migration to Azure  | [Recording Video](https://aka.ms/AAz85fx) <br> [Instructions](../05-app-mod/app-mod.md)
 
 
 ## 🔧 Prerequisites & Environment Setup
 
-We strongly recomend you use a Codespace - **via VS Code local**, for the demos as this provides a consistent environment for delivery. If you choose to run the demos locally, please ensure your local environment matches the requirements outlined below.
+We strongly recomend you use a Codespace for the demos as this provides a consistent environment for delivery. If you choose to run the demos locally, please ensure your local environment matches the requirements outlined below.
 
 - [ ] **Codespace setup:** Create a new Codespace on the main branch of this repository
-- [ ] **Open in VS Code:** Open the Codespace in Visual Studio Code (locally) using the "Open in VS Code" button in the GitHub web interface
+- [ ] **Enable MCP Extensions in the Extentions pannel** This allows you to use the mcp server configurations
 - [ ] **Wait for post-create script to finish:** This will take a few minutes to complete and sets up the Python environment and installs dependencies
 
-![Open in VS Code](../../img/open-codespace-in-vscode.png)
 ![Finish post create script](../../img/wait-for-post-create-to-finish.png)
 
 ### Required Tools
 
-✅ **Essential Tools**
+✅ **Essential Tools for local development**
 - [ ] **Visual Studio Code** (latest version)
 - [ ] **GitHub Copilot** (latest version)
 - [ ] **GitHub Copilot Chat** (latest version)
 - [ ] **GitHub Pull Requests** VS Code extension installed
+- [ ] **Microsoft Learn MCP Server** (latest version)
 - [ ] **Python 3.7+** with virtual environment support (this is run through a script on startup)
 
 ### GitHub Setup
@@ -44,7 +42,7 @@ We strongly recomend you use a Codespace - **via VS Code local**, for the demos 
 - [ ] GitHub Copilot subscription (Premium for Coding Agent features)
 - [ ] Sample Pull Request created by the Coding Agent, ready for the review scenario
 
-### VS Code Configuration
+### VS Code Configuration (if running locally/connected to a Codespace)
 
 ✅ **Extensions & Settings**
 - [ ] Local Codespace VS Code instance opens without errors
@@ -77,7 +75,7 @@ These are installed with the setup script when using a local Codespace, but if r
 
 ## 🎬 Demo-Specific Setup Instructions
 
-### Demo 1: Cloud Agent Assignment
+### Demo 1: Copilot CLI, plan and delegate to Cloud Coding Agent
 **Setup Requirements:**
 - [ ] **Note:** This demo uses a recorded demo video for consistency and time efficiency
 - [ ] Ensure the Cloud Agent Pull Request is already created on the repository as this will be needed in future demos
@@ -86,9 +84,9 @@ These are installed with the setup script when using a local Codespace, but if r
 
 ### Demo 2: PR Review Process
 **Setup Requirements:**
-- [ ] Open a local Codespace of this repository in VS Code
+- [ ] Open a Codespace of this repository
 - [ ] Ensure the PR created by the Cloud Agent from Demo 1 exists (check with the GitHub extension Pull Request panel)
-- [ ] GitHub Pull Request extension properly authenticated
+- [ ] Ensure the GitHub Pull Request extension is properly authenticated
 - [ ] Test the PR review workflow beforehand, but **DO NOT** submit a review before the demo
 - [Demo notes](../02-cloud-agent-pr-review/cloud-agent-pr-review.md)
 
@@ -96,25 +94,13 @@ These are installed with the setup script when using a local Codespace, but if r
 **Setup Requirements:**
 - [ ] Copilot Chat panel authenticated and accessible
 - [ ] Prepare to demonstrate custom agent creation
-- [ ] **Important:** Ensure the Custom Agent instructions include specific test code templates found in [Generate Custom Instructions](../03-custom-agent/custom-agent.md) 
-- [Demo notes](../03-custom-agent/custom-agent.md)
-
-### Demo 4: Agent Mode Testing
-**Setup Requirements:**
-- [ ] App running and available at http://localhost:5000 and terminal virtual environment activated with the dependency requirements installed. To test the app is running correctly, go to http://localhost:5000/products and you will see an empty product list
+- [ ] **Important:** Ensure the Custom Agent instructions include specific test code templates found in [Generate Custom Instructions](../03-custom-test-agent/custom-test-agent.md)
+- [ ] App running and available at http://localhost:5000 (if running locally) or the forwarded address/port and terminal virtual environment activated with the dependency requirements installed. When testing the app use the route /products and you will see an empty product list
 - [ ] `test_app.py` file should be present but **empty**
-- [ ] Custom Agent from Demo 3 should be configured correctly, including the test code templates
 - [ ] Terminal ready to run pytest commands within the virtual environment (venv)
-- [Demo notes](../04-custom-agent-add-tests/custom-agent-add-tests.md)
+- [Demo notes](../03-custom-test-agent/custom-test-agent.md)
 
-### Demo 5: MCP Server Integration
-**Setup Requirements:**
-- [ ] **CRITICAL:** Uninstall Microsoft Learn MCP Server if previously installed as the install flow of this MCP server is the demo
-- [ ] VS Code extensions panel accessible
-- [ ] Copilot Chat panel authenticated and accessible for example prompt if needed
-- [Demo notes](../05-add-mcp-server/add-mcp.md)
-
-### Demo 6: Database Migration
+### Demo 4: Database Migration
 **Setup Requirements:**
 - [ ] **Note:** Uses recorded demo video
 
@@ -123,11 +109,12 @@ If running live:
 - [ ] SQLite Viewer extension installed into the local VS Code Codespace instance
 - [ ] Microsoft Learn MCP server installed and available for best practice retrieval
 - [ ] Custom test-agent from Demo 3 created and available for test code creation
-- [Demo notes](../06-db-migration/add-sqldb.md)
+- [Demo notes](../04-db-migration/add-sqldb.md)
 
-### Demo 7: App Modernization
+### Demo 5: App Modernization
 **Setup Requirements:**
-- [ ] **Note:** Uses recorded demo video
+- [ ] **Note:** Uses recorded demo videos
+- [Demo Notes](../05-app-mod/app-mod.md)
 
 ## 🚀 Pre-Demo Checklist
 
@@ -136,10 +123,10 @@ If running live:
 - [ ] Agent mode is accessible in Copilot Chat
 - [ ] MCP Servers section visible in VS Code extensions
 - [ ] pytest runs successfully on sample tests
-- [ ] Flask application starts on localhost:5000
+- [ ] Flask application starts on localhost:5000 or forwarded address/port
 
 ### Content Preparation
-- [ ] Demo recordings are accessible and tested (for demo 1 and 6)
+- [ ] Demo recordings are accessible and tested (for demo 1 and 5)
 - [ ] Live demo scripts are rehearsed
 - [ ] Fallback plans prepared for live demos (demo recordings are quickly accessible)
 - [ ] All demo prompts are saved and easily accessible
@@ -148,7 +135,7 @@ If running live:
 ### Delivery Best Practices
 - **Rehearse:** Practice all live demos multiple times
 - **Backup Plans:** Have recorded versions of live demos as fallbacks
-- **Stay Current:** GitHub Copilot UI changes frequently - verify current interface and minor changes to avoid surprises
+- **Stay Current:** GitHub Copilot and VS Code UI changes frequently - verify current interface and minor changes to avoid surprises
 - **Custom Instructions:** Emphasize importance for code quality and security
 - **Real-world Context:** Connect each demo to the practical development scenario for Zava
 
@@ -156,7 +143,7 @@ If running live:
 
 ### Common Issues
 - **Copilot Not Active:** Check subscription and sign-in status
-- **MCP Server Issues:** Ensure proper installation of MCP Servers
+- **MCP Server Issues:** Ensure proper installation of MCP Servers (workspace vs gloablly)
 - **Python Environment:** Verify virtual environment activation
 - **GitHub Authentication:** Confirm repository access permissions
 - **Extension Conflicts:** Disable non-essential VS Code extensions that may interfere, even when using a local Codespace
@@ -179,4 +166,4 @@ If running live:
 
 **Session Delivery Contact:** For questions about content or delivery, reach out to the content leads listed in the main repository README.
 
-**Last Updated:** Review and update these instructions before each delivery to ensure accuracy with the latest GitHub Copilot features.
+**Last Updated:** _Feb 16th 2026_
