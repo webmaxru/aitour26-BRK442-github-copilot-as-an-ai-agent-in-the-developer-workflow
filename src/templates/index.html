@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Store</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f0f2f5;
+      color: #1a1a2e;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #16213e;
+      color: #fff;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    header h1 { font-size: 1.5rem; font-weight: 600; }
+
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    /* Form card */
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      margin-bottom: 1.5rem;
+    }
+    .card h2 { font-size: 1.1rem; margin-bottom: 1rem; color: #16213e; }
+
+    .form-row {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .form-row input {
+      flex: 1;
+      min-width: 140px;
+      padding: 0.6rem 0.85rem;
+      border: 1px solid #cdd0d4;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .form-row input:focus { border-color: #0f3460; }
+
+    button {
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+    button:hover { opacity: 0.85; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-primary { background: #0f3460; color: #fff; }
+    .btn-secondary { background: #e94560; color: #fff; }
+    .btn-ghost { background: transparent; color: #0f3460; border: 1px solid #0f3460; }
+
+    /* Status messages */
+    #status {
+      min-height: 1.4rem;
+      font-size: 0.88rem;
+      margin-top: 0.6rem;
+    }
+    #status.error { color: #c0392b; }
+    #status.success { color: #27ae60; }
+
+    /* Product list */
+    #loading { text-align: center; padding: 2rem; color: #666; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead th {
+      text-align: left;
+      padding: 0.6rem 0.75rem;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: #555;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    tbody tr { border-bottom: 1px solid #f0f2f5; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody td { padding: 0.75rem; vertical-align: middle; }
+    tbody td:last-child { white-space: nowrap; display: flex; gap: 0.4rem; justify-content: flex-end; }
+
+    .edit-input {
+      width: 100%;
+      padding: 0.35rem 0.55rem;
+      border: 1px solid #0f3460;
+      border-radius: 4px;
+      font-size: 0.95rem;
+    }
+
+    #empty-state {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: #888;
+    }
+
+    @media (max-width: 600px) {
+      .form-row { flex-direction: column; }
+      tbody td:last-child { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <path d="M16 10a4 4 0 01-8 0"/>
+    </svg>
+    <h1>Product Store</h1>
+  </header>
+
+  <main>
+    <!-- Add / Edit form -->
+    <div class="card">
+      <h2 id="form-title">Add New Product</h2>
+      <div class="form-row">
+        <input id="input-name" type="text" placeholder="Product name *" aria-label="Product name" />
+        <input id="input-desc" type="text" placeholder="Description" aria-label="Description" />
+        <button id="btn-submit" class="btn-primary" onclick="submitForm()">Add</button>
+        <button id="btn-cancel" class="btn-ghost" style="display:none" onclick="cancelEdit()">Cancel</button>
+      </div>
+      <div id="status" role="status" aria-live="polite"></div>
+    </div>
+
+    <!-- Product list -->
+    <div class="card">
+      <h2>Products</h2>
+      <div id="loading">Loading products…</div>
+      <table id="products-table" style="display:none" aria-label="Products list">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th style="text-align:right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="products-body"></tbody>
+      </table>
+      <div id="empty-state" style="display:none">No products yet. Add one above!</div>
+    </div>
+  </main>
+
+  <script>
+    let editingId = null;
+
+    async function apiFetch(path, options = {}) {
+      const res = await fetch(path, {
+        headers: { 'Content-Type': 'application/json' },
+        ...options,
+      });
+      if (!res.ok) {
+        const msg = await res.text().catch(() => res.statusText);
+        throw new Error(`HTTP ${res.status}: ${msg}`);
+      }
+      if (res.status === 204) return null;
+      return res.json();
+    }
+
+    function setStatus(msg, type = '') {
+      const el = document.getElementById('status');
+      el.textContent = msg;
+      el.className = type;
+    }
+
+    async function loadProducts() {
+      document.getElementById('loading').style.display = '';
+      document.getElementById('products-table').style.display = 'none';
+      document.getElementById('empty-state').style.display = 'none';
+      try {
+        const products = await apiFetch('/products');
+        renderProducts(products);
+      } catch (e) {
+        document.getElementById('loading').textContent = 'Failed to load products.';
+      }
+    }
+
+    function renderProducts(products) {
+      document.getElementById('loading').style.display = 'none';
+      const tbody = document.getElementById('products-body');
+      tbody.innerHTML = '';
+
+      if (!products || products.length === 0) {
+        document.getElementById('empty-state').style.display = '';
+        return;
+      }
+
+      document.getElementById('products-table').style.display = '';
+      products.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.id = `row-${p.id}`;
+        tr.innerHTML = `
+          <td class="cell-name">${escapeHtml(p.name)}</td>
+          <td class="cell-desc">${escapeHtml(p.description || '')}</td>
+          <td>
+            <button class="btn-ghost" onclick="startEdit('${p.id}')">Edit</button>
+            <button class="btn-secondary" onclick="deleteProduct('${p.id}')">Delete</button>
+          </td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function startEdit(id) {
+      const row = document.getElementById(`row-${id}`);
+      const name = row.querySelector('.cell-name').textContent;
+      const desc = row.querySelector('.cell-desc').textContent;
+
+      editingId = id;
+      document.getElementById('input-name').value = name;
+      document.getElementById('input-desc').value = desc;
+      document.getElementById('form-title').textContent = 'Edit Product';
+      document.getElementById('btn-submit').textContent = 'Save';
+      document.getElementById('btn-cancel').style.display = '';
+      document.getElementById('input-name').focus();
+      setStatus('');
+    }
+
+    function cancelEdit() {
+      editingId = null;
+      document.getElementById('input-name').value = '';
+      document.getElementById('input-desc').value = '';
+      document.getElementById('form-title').textContent = 'Add New Product';
+      document.getElementById('btn-submit').textContent = 'Add';
+      document.getElementById('btn-cancel').style.display = 'none';
+      setStatus('');
+    }
+
+    async function submitForm() {
+      const name = document.getElementById('input-name').value.trim();
+      const description = document.getElementById('input-desc').value.trim();
+
+      if (!name) {
+        setStatus('Product name is required.', 'error');
+        document.getElementById('input-name').focus();
+        return;
+      }
+
+      const btn = document.getElementById('btn-submit');
+      btn.disabled = true;
+      setStatus('');
+
+      try {
+        if (editingId) {
+          await apiFetch(`/products/${editingId}`, {
+            method: 'PUT',
+            body: JSON.stringify({ name, description }),
+          });
+          setStatus('Product updated.', 'success');
+          cancelEdit();
+        } else {
+          await apiFetch('/products', {
+            method: 'POST',
+            body: JSON.stringify({ name, description }),
+          });
+          setStatus('Product added.', 'success');
+          document.getElementById('input-name').value = '';
+          document.getElementById('input-desc').value = '';
+        }
+        await loadProducts();
+      } catch (e) {
+        setStatus(e.message || 'An error occurred.', 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function deleteProduct(id) {
+      if (!confirm('Delete this product?')) return;
+      try {
+        await apiFetch(`/products/${id}`, { method: 'DELETE' });
+        setStatus('Product deleted.', 'success');
+        await loadProducts();
+      } catch (e) {
+        setStatus(e.message || 'Failed to delete.', 'error');
+      }
+    }
+
+    // Allow pressing Enter to submit the form
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && (e.target.id === 'input-name' || e.target.id === 'input-desc')) {
+        submitForm();
+      }
+    });
+
+    loadProducts();
+  </script>
+</body>
+</html>
