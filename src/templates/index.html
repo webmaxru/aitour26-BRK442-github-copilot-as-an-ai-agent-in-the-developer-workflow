@@ -45,7 +45,8 @@
       gap: 0.75rem;
       flex-wrap: wrap;
     }
-    .form-row input {
+    .form-row input,
+    .form-row select {
       flex: 1;
       min-width: 140px;
       padding: 0.6rem 0.85rem;
@@ -54,8 +55,10 @@
       font-size: 0.95rem;
       outline: none;
       transition: border-color .2s;
+      background: #fff;
     }
-    .form-row input:focus { border-color: #0f3460; }
+    .form-row input:focus,
+    .form-row select:focus { border-color: #0f3460; }
 
     button {
       padding: 0.6rem 1.2rem;
@@ -140,6 +143,18 @@
       <div class="form-row">
         <input id="input-name" type="text" placeholder="Product name *" aria-label="Product name" />
         <input id="input-desc" type="text" placeholder="Description" aria-label="Description" />
+        <select id="input-category" aria-label="Category">
+          <option value="">— Category —</option>
+          <option value="Electrical">Electrical</option>
+          <option value="Garden &amp; Outdoor">Garden &amp; Outdoor</option>
+          <option value="Hand tools">Hand tools</option>
+          <option value="Hardware">Hardware</option>
+          <option value="Lumber &amp; Building materials">Lumber &amp; Building materials</option>
+          <option value="Paint &amp; Finishes">Paint &amp; Finishes</option>
+          <option value="Plumbing">Plumbing</option>
+          <option value="Power tools">Power tools</option>
+          <option value="Storage &amp; organization">Storage &amp; organization</option>
+        </select>
         <button id="btn-submit" class="btn-primary" onclick="submitForm()">Add</button>
         <button id="btn-cancel" class="btn-ghost" style="display:none" onclick="cancelEdit()">Cancel</button>
       </div>
@@ -155,6 +170,7 @@
           <tr>
             <th>Name</th>
             <th>Description</th>
+            <th>Category</th>
             <th style="text-align:right">Actions</th>
           </tr>
         </thead>
@@ -215,6 +231,7 @@
         tr.innerHTML = `
           <td class="cell-name">${escapeHtml(p.name)}</td>
           <td class="cell-desc">${escapeHtml(p.description || '')}</td>
+          <td class="cell-cat">${escapeHtml(p.category || '')}</td>
           <td>
             <button class="btn-ghost" onclick="startEdit('${p.id}')">Edit</button>
             <button class="btn-secondary" onclick="deleteProduct('${p.id}')">Delete</button>
@@ -236,10 +253,12 @@
       const row = document.getElementById(`row-${id}`);
       const name = row.querySelector('.cell-name').textContent;
       const desc = row.querySelector('.cell-desc').textContent;
+      const cat = row.querySelector('.cell-cat').textContent;
 
       editingId = id;
       document.getElementById('input-name').value = name;
       document.getElementById('input-desc').value = desc;
+      document.getElementById('input-category').value = cat;
       document.getElementById('form-title').textContent = 'Edit Product';
       document.getElementById('btn-submit').textContent = 'Save';
       document.getElementById('btn-cancel').style.display = '';
@@ -251,6 +270,7 @@
       editingId = null;
       document.getElementById('input-name').value = '';
       document.getElementById('input-desc').value = '';
+      document.getElementById('input-category').value = '';
       document.getElementById('form-title').textContent = 'Add New Product';
       document.getElementById('btn-submit').textContent = 'Add';
       document.getElementById('btn-cancel').style.display = 'none';
@@ -260,6 +280,7 @@
     async function submitForm() {
       const name = document.getElementById('input-name').value.trim();
       const description = document.getElementById('input-desc').value.trim();
+      const category = document.getElementById('input-category').value;
 
       if (!name) {
         setStatus('Product name is required.', 'error');
@@ -275,18 +296,19 @@
         if (editingId) {
           await apiFetch(`/products/${editingId}`, {
             method: 'PUT',
-            body: JSON.stringify({ name, description }),
+            body: JSON.stringify({ name, description, category }),
           });
           setStatus('Product updated.', 'success');
           cancelEdit();
         } else {
           await apiFetch('/products', {
             method: 'POST',
-            body: JSON.stringify({ name, description }),
+            body: JSON.stringify({ name, description, category }),
           });
           setStatus('Product added.', 'success');
           document.getElementById('input-name').value = '';
           document.getElementById('input-desc').value = '';
+          document.getElementById('input-category').value = '';
         }
         await loadProducts();
       } catch (e) {
