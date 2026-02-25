@@ -13,7 +13,7 @@
     .card { background: #fff; border-radius: 8px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 6px rgba(0,0,0,.08); }
     h2 { font-size: 1.1rem; margin-bottom: 16px; color: #2c3e50; }
     .form-row { display: flex; gap: 12px; flex-wrap: wrap; }
-    .form-row input { flex: 1; min-width: 160px; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.95rem; }
+    .form-row input, .form-row select { flex: 1; min-width: 160px; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.95rem; background: #fff; }
     button { padding: 8px 18px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.95rem; }
     .btn-primary { background: #2980b9; color: #fff; }
     .btn-primary:hover { background: #1f6391; }
@@ -46,6 +46,18 @@
         <div class="form-row">
           <input type="text" id="product-name" placeholder="Product name *" required />
           <input type="text" id="product-description" placeholder="Description (optional)" />
+          <select id="product-category">
+            <option value="">Category (optional)</option>
+            <option value="Electrical">Electrical</option>
+            <option value="Garden &amp; Outdoor">Garden &amp; Outdoor</option>
+            <option value="Hand tools">Hand tools</option>
+            <option value="Hardware">Hardware</option>
+            <option value="Lumber &amp; Building materials">Lumber &amp; Building materials</option>
+            <option value="Paint &amp; Finishes">Paint &amp; Finishes</option>
+            <option value="Plumbing">Plumbing</option>
+            <option value="Power tools">Power tools</option>
+            <option value="Storage &amp; organization">Storage &amp; organization</option>
+          </select>
           <button type="submit" class="btn-primary" id="submit-btn">Add Product</button>
           <button type="button" class="btn-secondary" id="cancel-btn" style="display:none">Cancel</button>
         </div>
@@ -60,6 +72,7 @@
           <thead>
             <tr>
               <th>Name</th>
+              <th>Category</th>
               <th>Description</th>
               <th>ID</th>
               <th>Actions</th>
@@ -107,6 +120,7 @@
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${escapeHtml(p.name)}</td>
+          <td>${escapeHtml(p.category || '')}</td>
           <td>${escapeHtml(p.description || '')}</td>
           <td style="font-size:.8rem;color:#999">${escapeHtml(p.id)}</td>
           <td class="actions">
@@ -126,6 +140,7 @@
       const id = document.getElementById('product-id').value;
       const name = document.getElementById('product-name').value.trim();
       const description = document.getElementById('product-description').value.trim();
+      const category = document.getElementById('product-category').value;
       if (!name) return;
       try {
         const method = id ? 'PUT' : 'POST';
@@ -133,7 +148,7 @@
         const res = await fetch(url, {
           method,
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, description })
+          body: JSON.stringify({ name, description, category })
         });
         if (!res.ok) throw new Error(await res.text());
         showMessage(id ? 'Product updated!' : 'Product added!', 'success');
@@ -164,6 +179,7 @@
         document.getElementById('product-id').value = p.id;
         document.getElementById('product-name').value = p.name;
         document.getElementById('product-description').value = p.description || '';
+        document.getElementById('product-category').value = p.category || '';
         document.getElementById('form-title').textContent = 'Edit Product';
         document.getElementById('submit-btn').textContent = 'Update Product';
         document.getElementById('cancel-btn').style.display = 'inline-block';
@@ -177,6 +193,7 @@
       document.getElementById('product-id').value = '';
       document.getElementById('product-name').value = '';
       document.getElementById('product-description').value = '';
+      document.getElementById('product-category').value = '';
       document.getElementById('form-title').textContent = 'Add Product';
       document.getElementById('submit-btn').textContent = 'Add Product';
       document.getElementById('cancel-btn').style.display = 'none';

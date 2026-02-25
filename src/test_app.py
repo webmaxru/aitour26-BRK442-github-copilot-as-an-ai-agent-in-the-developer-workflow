@@ -30,11 +30,12 @@ def test_get_products_empty(client):
 
 
 def test_create_product(client):
-    res = client.post('/products', json={'name': 'Widget', 'description': 'A widget'})
+    res = client.post('/products', json={'name': 'Widget', 'description': 'A widget', 'category': 'Hardware'})
     assert res.status_code == 201
     body = res.get_json()
     assert body['name'] == 'Widget'
     assert body['description'] == 'A widget'
+    assert body['category'] == 'Hardware'
     assert 'id' in body
 
 
@@ -64,11 +65,12 @@ def test_get_product_not_found(client):
 def test_update_product(client):
     create_res = client.post('/products', json={'name': 'Old Name'})
     product_id = create_res.get_json()['id']
-    res = client.put(f'/products/{product_id}', json={'name': 'New Name', 'description': 'Updated'})
+    res = client.put(f'/products/{product_id}', json={'name': 'New Name', 'description': 'Updated', 'category': 'Plumbing'})
     assert res.status_code == 200
     body = res.get_json()
     assert body['name'] == 'New Name'
     assert body['description'] == 'Updated'
+    assert body['category'] == 'Plumbing'
 
 
 def test_update_product_not_found(client):
